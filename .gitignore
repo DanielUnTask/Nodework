@@ -1,10 +1,7 @@
-# Project place file
-/Loader.rbxlx
+/Packages/
+/.vscode/
+sourcemap.json
 
-# Roblox Studio lock files
+/Loader.rbxlx
 /*.rbxlx.lock
 /*.rbxl.lock
-
-Packages/
-.vscode/
-sourcemap.jsong
