@@ -1,0 +1,13 @@
+[package]
+name = "danieluntask/task"
+description = "Lightweight task scheduler with coroutine pooling."
+version = "0.1.1"
+license = "MIT"
+authors = ["DanielUnTask"]
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+exclude = ["**"]
+include = ["src", "src/*", "default.project.json", "wally.lock", "wally.toml", "LICENSE"]
+
+[dependencies]

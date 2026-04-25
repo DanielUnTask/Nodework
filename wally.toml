@@ -1,0 +1,15 @@
+[package]
+name = "danieluntask/nodework"
+description = "simple loader"
+version = "0.0.8"
+license = "MIT"
+authors = ["DanielUnTask"]
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+exclude = ["**"]
+include = ["src", "src/*", "default.project.json", "wally.lock", "wally.toml", "LICENSE"]
+
+[dependencies]
+Signal = "danieluntask/signal@0.1.7"
+Promise = "evaera/promise@4.0.0"
