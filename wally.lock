@@ -4,12 +4,12 @@ registry = "test"
 
 [[package]]
 name = "danieluntask/nodework"
-version = "0.0.8"
-dependencies = [["Promise", "evaera/promise@4.0.0"], ["Signal", "danieluntask/signal@0.1.7"]]
+version = "0.0.9"
+dependencies = [["Promise", "evaera/promise@4.0.0"], ["Signal", "danieluntask/signal@0.1.8"]]
 
 [[package]]
 name = "danieluntask/signal"
-version = "0.1.7"
+version = "0.1.8"
 dependencies = [["Task", "danieluntask/task@0.1.1"]]
 
 [[package]]
