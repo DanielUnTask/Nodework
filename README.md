@@ -200,7 +200,6 @@ PlayerService:CreatePlayer()
 Nodework behavior can be customized with options.
 ```lua
 local Options = {
-    deep = true,  -- Scan all descendants for modules
 	attempts = 3, 	-- Maximum attempts to load a module
 
     -- Optional filter to decide if a ModuleScript should be loaded
@@ -235,7 +234,9 @@ Nodework:register(containerName, options?)
 Example:
 ```lua
 Nodework:register("services", {
-    deep = true
+    boot = {
+		freeze = true,
+	},
 })
 ```
 ### addPath

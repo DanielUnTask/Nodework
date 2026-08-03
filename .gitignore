@@ -1,6 +1,6 @@
 /Packages/
 /.vscode/
-sourcemap.json
+/sourcemap.json
 
 /Loader.rbxlx
 /*.rbxlx.lock
