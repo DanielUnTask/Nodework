@@ -12,7 +12,6 @@ local tableUtil = require("./Components/TableUtil")
 
 --- Constants
 local DEFAULT_OPTIONS: types.ScopeOptions = {
-	deep = true,
 	attempts = 3,
 
 	import = {
@@ -57,7 +56,7 @@ export type PrivateScope = types.Scope & {
     @return types.Scope
 ]=]
 function Scope.new(name: string, options: types.ScopeOptions?)
-	local self = {} :: PrivateScope
+	local self = ({} :: any) :: PrivateScope
 
 	self._name = name
 	self._sorted = {}
@@ -70,7 +69,7 @@ function Scope.new(name: string, options: types.ScopeOptions?)
 	setmetatable(self :: any, {
 		__index = Scope,
 		__call = function(tbl, value: (string | { string })?, waitForChild: boolean?)
-			return (tbl :: PrivateScope):_import(value, waitForChild)
+			return ((tbl :: any) :: PrivateScope):_import(value, waitForChild)
 		end,
 	})
 
@@ -130,7 +129,7 @@ end
     @param waitForChild boolean? 
     @return ...any
 ]=]
-function Scope._import(self: PrivateScope, value: (string | { string })?, waitForChild: boolean?)
+function Scope._import(self: PrivateScope, value: (string | { string })?, waitForChild: boolean?): ...any
 	local options = self._options
 	if self._status == "preload" then
 		logger.assert(
@@ -183,7 +182,7 @@ function Scope.add(self: PrivateScope, graph: { ModuleScript })
 		end
 
 		if boot.preInit and typeof(result) == "table" then
-			local callback = result[callMethod]
+			local callback = result[callMethod] :: (...any) -> ()
 			if typeof(callback) == "function" then
 				callback(result)
 			end
@@ -228,7 +227,7 @@ function Scope.ignite(self: PrivateScope)
 				end
 
 				table.insert(
-					promises,
+					promises :: any,
 					external.Promise.new(function(r)
 						module[initCall](module)
 						debug.setmemorycategory(event.name)

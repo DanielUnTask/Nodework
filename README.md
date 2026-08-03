@@ -4,7 +4,83 @@ A powerful game framework for the Roblox platform.
 Nodework focuses on simple modular architecture while remaining lightweight and flexible.
 Instead of enforcing a strict framework structure, Nodework gives you tools to build your own architecture using containers, lifecycles, and paths.
 
-[Wally Package](https://wally.run/package/danieluntask/nodework?version=0.0.9)
+[Wally Package](https://wally.run/package/danieluntask/nodework?version=0.1.0)
+
+# Update
+
+The latest version introduces several improvements that simplify configuration and module discovery.
+
+### What's Changed
+
+- **Removed `deep` option**
+  - Nodework now uses `QueryDescendants()` internally to locate `ModuleScript` instances.
+  - Recursive scanning is enabled by default, so the `deep` option is no longer required.
+
+- **More flexible module filtering**
+  - Use the `predicate` option to decide whether a `ModuleScript` should be loaded.
+  - Use the `exclude` parameter in `addPath()` to ignore specific modules by name.
+
+- **Case-insensitive paths**
+  - Path prefixes and folder names are now resolved without case sensitivity.
+  - The following examples are all valid:
+    ```lua
+    "server/Services"
+    "SERVER/services"
+    "SeRvEr/SeRvIcEs"
+    ```
+
+- **Waiting for scopes and modules**
+  - `Nodework:wait(scopeName)` waits until a scope has been registered and returns it.
+  - This is recommended when working from scripts or other code that may execute before the target scope is available.
+  - Individual modules can also be awaited by passing `true` as the second argument when retrieving them from a scope.
+
+### Migration
+
+**Before**
+```lua
+Nodework:register("Services", {
+    deep = true,
+})
+```
+
+**After**
+```lua
+Nodework:register("Services")
+```
+
+Filtering modules:
+
+```lua
+Nodework:register("Services", {
+    predicate = function(moduleScript: ModuleScript)
+        return moduleScript.Name:match("Service$") ~= nil
+    end
+})
+```
+
+Ignoring specific modules:
+
+```lua
+Nodework:addPath(
+    "server/Services",
+    nil,
+    { "TestService", "DebugService" }
+)
+```
+
+Waiting for a scope:
+
+```lua
+local Services = Nodework:wait("Services")
+```
+
+Waiting for a module:
+
+```lua
+local PlayerService = Services("PlayerService", true)
+```
+
+The second argument tells Nodework to wait until the module has been loaded and is ready to use.
 
 # Getting Started
 First, register a container and define the paths where modules should be loaded.

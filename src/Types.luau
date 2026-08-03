@@ -7,7 +7,6 @@ local External = require("./External")
 --- Types
 
 export type ScopeOptions = {
-	deep: boolean?,
 	attempts: number?,
 	predicate: ((module: ModuleScript) -> boolean)?,
 
@@ -38,6 +37,7 @@ export type Node = {
 export type Nodework = {
 	register: (self: Nodework, scopeName: string, options: ScopeOptions?) -> (),
 	addPath: (self: Nodework, path: string, order: { string }?, exclude: { string }?) -> Node,
+	wait: (self: Nodework, scopeName: string) -> Scope,
 	[string]: Scope,
 }
 

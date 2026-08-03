@@ -1,19 +1,20 @@
 --!strict
 --!optimize 2
 
-local RunTimeLib = {}
+const RunTimeLib = {}
 
 --- Services
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
+const Players = game:GetService("Players")
+const RunService = game:GetService("RunService")
 
 --- Dependencies
-local logger = require("./Logger")
-local external = require("../External")
+const logger = require("./Logger")
+const external = require("../External")
 
 --- Constants
-local IS_CLIENT = RunService:IsClient()
-local ACCEPTABLE_SERVICES = {
+const IS_CLIENT = RunService:IsClient()
+
+const ACCEPTABLE_SERVICES = {
 	SERVER = "ServerScriptService",
 	CLIENT = "PlayerScripts",
 	SHARED = "ReplicatedStorage",
@@ -21,12 +22,24 @@ local ACCEPTABLE_SERVICES = {
 }
 
 --- Variables
-local Signals = {} :: { [string]: external.Signal<...any> }
+const Signals = {} :: { [string]: external.Signal<...any> }
 
 --- Private
-local function resolveService(serviceName: string)
-	local serviceClass = ACCEPTABLE_SERVICES[serviceName:upper()]
-	logger.assert(serviceClass, `Invalid service: "{serviceName}" is not allowed.`, true)
+const function findChild(parent: Instance, name: string): Instance?
+	const lower = string.lower(name)
+
+	for _, child in parent:GetChildren() do
+		if string.lower(child.Name) == lower then
+			return child
+		end
+	end
+
+	return nil
+end
+
+const function resolveService(serviceName: string)
+	const serviceClass = ACCEPTABLE_SERVICES[serviceName:upper()] :: string
+	logger.assert(serviceClass :: any, `Invalid service: "{serviceName}" is not allowed.`, true)
 
 	if serviceClass == "PlayerScripts" then
 		logger.assert(IS_CLIENT, `Attempted to access PlayerScripts from the server.`, true)
@@ -46,8 +59,11 @@ function RunTimeLib.resolvePath(path: string)
 
 	local current = service
 	for i = 2, #segments do
-		current = current:WaitForChild(segments[i])
+		const child = findChild(current, segments[i])
+		logger.assert(child :: any, `Couldn't find "{segments[i]}" inside "{current.Name}".`, true)
+		current = child
 	end
+
 	return current
 end
 
@@ -61,7 +77,7 @@ function RunTimeLib.getSignal(tag: string)
 end
 
 function RunTimeLib.resolveSignal(tag: string)
-	local signal = Signals[tag]
+	const signal = Signals[tag]
 	if signal then
 		Signals[tag] = nil
 		signal:Fire()
@@ -83,23 +99,19 @@ end
 
 function RunTimeLib.getModuleTable(
 	parent: Instance,
-	deep: boolean,
 	predicateFn: ((module: ModuleScript) -> boolean)?
 ): { ModuleScript }
-	local objects = (deep and parent:GetDescendants() or parent:GetChildren()) :: { Instance }
-	local modules = {}
+	const objects = (parent:QueryDescendants("ModuleScript") :: any) :: { ModuleScript }
+	const raw_modules = {}
 
 	for _, moduleScript in ipairs(objects) do
-		if moduleScript:IsA("ModuleScript") then
-			if typeof(predicateFn) == "function" and not predicateFn(moduleScript) then
-				continue
-			end
-
-			table.insert(modules, moduleScript :: ModuleScript)
+		if typeof(predicateFn) == "function" and not predicateFn(moduleScript) then
+			continue
 		end
+		table.insert(raw_modules, moduleScript)
 	end
 
-	return modules
+	return raw_modules
 end
 
 function RunTimeLib.retryWithDelay<T>(callback: () -> T, max_attemps: number?): T
