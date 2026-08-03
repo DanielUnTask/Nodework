@@ -14,12 +14,12 @@ export type Promise<T...> = External.Promise<T...>
 export type PromiseConstructor = External.PromiseConstructor
 
 --- Variables
-const Scopes = {} :: { [string]: Scope.PrivateScope }
+local Scopes = {} :: { [string]: Scope.PrivateScope }
 
 --- Public
 function Nodework:register(scopeName: string, options: Types.ScopeOptions?)
 	Logger.assert(not Scopes[scopeName], `A scope with the same name was found; {scopeName}`)
-	const scope = Scope.new(scopeName, options)
+	local scope = Scope.new(scopeName, options)
 	Scopes[scopeName] = scope
 	RunTime.resolveSignal(`{scopeName}_wait_scope`)
 end
@@ -28,10 +28,10 @@ function Nodework:addPath(path: string, order: { string }?, exclude: { string }?
 	local parent = RunTime.resolvePath(path)
 	return {
 		to = function(_, scopeName: string)
-			const scope = Scopes[scopeName] :: Scope.PrivateScope
-			const modules = RunTime.getModuleTable(parent :: any, scope._options.predicate)
-			const sources = TableUtil.exclude(modules, exclude or {})
-			const graph = TableUtil.sort(sources, order or {})
+			local scope = Scopes[scopeName] :: Scope.PrivateScope
+			local modules = RunTime.getModuleTable(parent :: any, scope._options.predicate)
+			local sources = TableUtil.exclude(modules, exclude or {})
+			local graph = TableUtil.sort(sources, order or {})
 			scope:add(graph)
 		end,
 	}

@@ -1,20 +1,20 @@
 --!strict
 --!optimize 2
 
-const RunTimeLib = {}
+local RunTimeLib = {}
 
 --- Services
-const Players = game:GetService("Players")
-const RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
 
 --- Dependencies
-const logger = require("./Logger")
-const external = require("../External")
+local logger = require("./Logger")
+local external = require("../External")
 
 --- Constants
-const IS_CLIENT = RunService:IsClient()
+local IS_CLIENT = RunService:IsClient()
 
-const ACCEPTABLE_SERVICES = {
+local ACCEPTABLE_SERVICES = {
 	SERVER = "ServerScriptService",
 	CLIENT = "PlayerScripts",
 	SHARED = "ReplicatedStorage",
@@ -22,11 +22,11 @@ const ACCEPTABLE_SERVICES = {
 }
 
 --- Variables
-const Signals = {} :: { [string]: external.Signal<...any> }
+local Signals = {} :: { [string]: external.Signal<...any> }
 
 --- Private
-const function findChild(parent: Instance, name: string): Instance?
-	const lower = string.lower(name)
+local function findChild(parent: Instance, name: string): Instance?
+	local lower = string.lower(name)
 
 	for _, child in parent:GetChildren() do
 		if string.lower(child.Name) == lower then
@@ -37,8 +37,8 @@ const function findChild(parent: Instance, name: string): Instance?
 	return nil
 end
 
-const function resolveService(serviceName: string)
-	const serviceClass = ACCEPTABLE_SERVICES[serviceName:upper()] :: string
+local function resolveService(serviceName: string)
+	local serviceClass = ACCEPTABLE_SERVICES[serviceName:upper()] :: string
 	logger.assert(serviceClass :: any, `Invalid service: "{serviceName}" is not allowed.`, true)
 
 	if serviceClass == "PlayerScripts" then
@@ -59,7 +59,7 @@ function RunTimeLib.resolvePath(path: string)
 
 	local current = service
 	for i = 2, #segments do
-		const child = findChild(current, segments[i])
+		local child = findChild(current, segments[i])
 		logger.assert(child :: any, `Couldn't find "{segments[i]}" inside "{current.Name}".`, true)
 		current = child
 	end
@@ -77,7 +77,7 @@ function RunTimeLib.getSignal(tag: string)
 end
 
 function RunTimeLib.resolveSignal(tag: string)
-	const signal = Signals[tag]
+	local signal = Signals[tag]
 	if signal then
 		Signals[tag] = nil
 		signal:Fire()
@@ -101,8 +101,8 @@ function RunTimeLib.getModuleTable(
 	parent: Instance,
 	predicateFn: ((module: ModuleScript) -> boolean)?
 ): { ModuleScript }
-	const objects = (parent:QueryDescendants("ModuleScript") :: any) :: { ModuleScript }
-	const raw_modules = {}
+	local objects = (parent:QueryDescendants("ModuleScript") :: any) :: { ModuleScript }
+	local raw_modules = {}
 
 	for _, moduleScript in ipairs(objects) do
 		if typeof(predicateFn) == "function" and not predicateFn(moduleScript) then

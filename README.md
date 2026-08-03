@@ -4,7 +4,7 @@ A powerful game framework for the Roblox platform.
 Nodework focuses on simple modular architecture while remaining lightweight and flexible.
 Instead of enforcing a strict framework structure, Nodework gives you tools to build your own architecture using containers, lifecycles, and paths.
 
-[Wally Package](https://wally.run/package/danieluntask/nodework?version=0.1.0)
+[Wally Package](https://wally.run/package/danieluntask/nodework?version=0.1.1)
 
 # Update
 
